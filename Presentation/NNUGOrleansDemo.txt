@@ -1,0 +1,10 @@
+Hello World Demo
+-- To debug, set both as startup projects in solution 
+-- Pr start the silohost in a shell and run the client project separately
+
+To start the silo
+dotnet run --project src\SiloHost
+
+To start the client (you will have to use a different command window)
+dotnet run --project src\OrleansClient
+
