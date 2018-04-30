@@ -6107,18 +6107,20 @@ namespace ConsoleApp
             s.Add("Bård Bårdsen");
             s.Add("Bård Borgersen");
             var list = NameParser.RunNames(s);
-            Console.WriteLine("Values returned:");
+            //Console.WriteLine("Values returned:");
             foreach (var item in list)
             {
-                Console.WriteLine($"{item.Name} - {item.NumberOfAppearances}");
+                //Console.WriteLine($"{item.Name} - {item.NumberOfAppearances}");
+                Console.WriteLine($"{item.Name}");
             }
             Console.ReadLine();
 
             list = ImprovedNameParser.RunNames(s);
-            Console.WriteLine("Values returned:");
+            //Console.WriteLine("Values returned:");
             foreach (var item in list)
             {
-                Console.WriteLine($"{item.Name} - {item.NumberOfAppearances}");
+                //Console.WriteLine($"{item.Name} - {item.NumberOfAppearances}");
+                Console.WriteLine($"{item.Name}");
             }
             Console.ReadLine();
 

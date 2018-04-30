@@ -8,6 +8,7 @@ namespace NameLib
         public static List<NameObject> RunNames(List<string> names)
         {
             var returnList = new List<NameObject>();
+            var workList = new List<NameObject>();
             var allNames = new List<string>();
             var uniqueNames = new List<string>();
             foreach (var name in names)
@@ -32,12 +33,10 @@ namespace NameLib
                     if (innerName.Equals(name))
                         count++;
                 }
-//                var print = $"{name} appears {count} times";
-//                Console.WriteLine(print);
-                returnList.Add(new NameObject { Name = name, NumberOfAppearances = count });
+                workList.Add(new NameObject { Name = name, NumberOfAppearances = count });
             }
 
-            returnList.Sort(
+            workList.Sort(
                 delegate (NameObject o1, NameObject o2) {
                     int compareAppearances = o2.NumberOfAppearances.CompareTo(o1.NumberOfAppearances);
                     if (compareAppearances == 0)
@@ -46,6 +45,14 @@ namespace NameLib
                     }
                     return compareAppearances;
                 });
+
+            foreach (var element in workList)
+            {
+                returnList.Add(element);
+                if (returnList.Count == 3)
+                    break;
+            }
+            
             return returnList;
         }
     }
