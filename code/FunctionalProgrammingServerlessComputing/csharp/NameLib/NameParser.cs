@@ -32,8 +32,6 @@ namespace NameLib
                     if (innerName.Equals(name))
                         count++;
                 }
-//                var print = $"{name} appears {count} times";
-//                Console.WriteLine(print);
                 returnList.Add(new NameObject { Name = name, NumberOfAppearances = count });
             }
             

@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\fsharp\FNameLib\FNameLib.fsproj" />
     <ProjectReference Include="..\NameLib\NameLib.csproj" />
   </ItemGroup>
 

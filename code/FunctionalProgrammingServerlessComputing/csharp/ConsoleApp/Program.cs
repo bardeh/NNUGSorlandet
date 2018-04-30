@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NameLib;
+using FNameLib;
 
 namespace ConsoleApp
 {
@@ -6121,6 +6122,19 @@ namespace ConsoleApp
             }
             Console.ReadLine();
 
+            var nameList = NameParsing.getMostPopularNames(s);
+            foreach (var item in nameList)
+            {
+                Console.WriteLine($"{item}");
+            }
+            Console.ReadLine();
+
+            nameList = NameParsing.getMostPopularNamesRefactored(s);
+            foreach (var item in nameList)
+            {
+                Console.WriteLine($"{item}");
+            }
+            Console.ReadLine();
 
         }
     }
