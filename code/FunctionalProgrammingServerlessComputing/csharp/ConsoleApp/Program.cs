@@ -2,12 +2,106 @@
 using System.Collections.Generic;
 using NameLib;
 using FNameLib;
+using System.Net.Http;
+using System.Net;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
 
 namespace ConsoleApp
 {
     class Program
     {
         static void Main(string[] args)
+        {
+            var s = GetTestNames();
+            // Simpel Improved FSimpel FImproved
+            var functions = new List<string>
+            {
+                "Simpel",
+                "FSimpel",
+                "Improved",
+                "FImproved"
+            };
+
+            foreach (var func in functions)
+            {
+                var task = RunFuncs(s, "fanameparser.azurewebsites.net", func);
+                //var task = RunFuncs(s, "localhost:7071", func);
+                var result = task.Result;
+                Console.WriteLine(result);
+            }
+
+            var list = NameParser.RunNames(s);
+            string ret = "C# Simple list: ";
+            foreach (var item in list)
+            {
+                ret = ret + $"{item.Name}, ";
+            }
+            ret = ret.Substring(0, ret.Length - 2);
+            Console.WriteLine($"{ret}");
+
+            var nameList = NameParsing.getMostPopularNames(s);
+            ret = "F# Simple list: ";
+            foreach (var item in nameList)
+            {
+                ret = ret + $"{item}, ";
+            }
+            ret = ret.Substring(0, ret.Length - 2);
+            Console.WriteLine($"{ret}");
+
+            list = ImprovedNameParser.RunNames(s);
+            ret = "C# Improved list: ";
+            foreach (var item in list)
+            {
+                ret = ret + $"{item.Name}, ";
+            }
+            ret = ret.Substring(0, ret.Length - 2);
+            Console.WriteLine($"{ret}");
+
+            nameList = NameParsing.getMostPopularNamesRefactored(s);
+            ret = "F# Improved list: ";
+            foreach (var item in nameList)
+            {
+                ret = ret + $"{item}, ";
+            }
+            ret = ret.Substring(0, ret.Length - 2);
+            Console.WriteLine($"{ret}");
+
+        }
+
+        public static async Task<string> RunFuncs(List<string> list, string url, string function)
+        {
+            try
+            {
+                var client = new HttpClient();
+                client.Timeout = TimeSpan.FromSeconds(20);
+                //http://fanameparser.azurewebsites.net/api/improved?name=per%20ove%20Per%20ove%20espen%20per-ove%20B%C3%A5rd%20Espen%20b%C3%A5rd%20B%C3%A5rd
+                //var response = await client.GetAsync($"http://{url}/api/{function}?name=per%20ove%20Per%20ove%20espen%20per-ove%20B%C3%A5rd%20Espen%20b%C3%A5rd%20B%C3%A5rd");
+
+                var myContent = JsonConvert.SerializeObject(list);
+                var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
+                var byteContent = new ByteArrayContent(buffer);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                //var result = client.PostAsync("", byteContent).Result;
+
+                var response = await client.PostAsync($"http://{url}/api/{function}", byteContent);
+                return await response.Content.ReadAsStringAsync();
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return ex.Message;
+            }
+            catch (OperationCanceledException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return ex.Message;
+            }
+        }
+
+
+        private static List<string> GetTestNames()
         {
             var s = new List<string>();
             s.Add("hans per kristiansen-Kristiansen");
@@ -6106,38 +6200,7 @@ namespace ConsoleApp
             s.Add("Hans Kristian");
             s.Add("Bård Bårdsen");
             s.Add("Bård Borgersen");
-            var list = NameParser.RunNames(s);
-            //Console.WriteLine("Values returned:");
-            foreach (var item in list)
-            {
-                //Console.WriteLine($"{item.Name} - {item.NumberOfAppearances}");
-                Console.WriteLine($"{item.Name}");
-            }
-            Console.ReadLine();
-
-            list = ImprovedNameParser.RunNames(s);
-            //Console.WriteLine("Values returned:");
-            foreach (var item in list)
-            {
-                //Console.WriteLine($"{item.Name} - {item.NumberOfAppearances}");
-                Console.WriteLine($"{item.Name}");
-            }
-            Console.ReadLine();
-
-            var nameList = NameParsing.getMostPopularNames(s);
-            foreach (var item in nameList)
-            {
-                Console.WriteLine($"{item}");
-            }
-            Console.ReadLine();
-
-            nameList = NameParsing.getMostPopularNamesRefactored(s);
-            foreach (var item in nameList)
-            {
-                Console.WriteLine($"{item}");
-            }
-            Console.ReadLine();
-
+            return s;
         }
     }
 }

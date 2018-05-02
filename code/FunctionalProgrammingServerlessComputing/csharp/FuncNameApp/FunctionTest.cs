@@ -13,10 +13,11 @@ namespace FuncNameApp
 {
     public static class FunctionTest
     {
-        [FunctionName("Simpel")]
-        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
+        private static async Task<List<string>> ParseInputData(HttpRequestMessage req, TraceWriter log)
         {
             log.Info("C# HTTP trigger function processed a request.");
+            List<string> data = null;
+            var names = new List<string>();
 
             // parse query parameter
             string name = req.GetQueryNameValuePairs()
@@ -26,17 +27,27 @@ namespace FuncNameApp
             if (name == null)
             {
                 // Get request body
-                dynamic data = await req.Content.ReadAsAsync<object>();
-                name = data?.name;
+                data = await req.Content.ReadAsAsync<List<string>>();
             }
 
-            if (name == null)
-                return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or in the request body");
+            if (name == null && data == null)
+                return names;
 
-            // Do the actual work here - expecting a long string with names passed in
-            var names = new List<string>();
-            names.Add(name);
-                
+            if (name == null)
+                names = data;
+            else
+                names.Add(name);
+
+            return names;
+        }
+
+        [FunctionName("Simpel")]
+        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
+        {
+            var names = await ParseInputData(req, log);
+            if(names.Count == 0)
+                return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or a List<strings> in the request body");
+
             var list = NameParser.RunNames(names);
             string ret = "C# Simple list: ";
             foreach (var item in list)
@@ -50,30 +61,12 @@ namespace FuncNameApp
         [FunctionName("Improved")]
         public static async Task<HttpResponseMessage> RunImproved([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
-            log.Info("C# HTTP trigger function processed a request.");
-
-            // parse query parameter
-            string name = req.GetQueryNameValuePairs()
-                .FirstOrDefault(q => string.Compare(q.Key, "name", true) == 0)
-                .Value;
-
-            if (name == null)
-            {
-                // Get request body
-                dynamic data = await req.Content.ReadAsAsync<object>();
-                name = data?.name;
-            }
-
-            if (name == null)
-                return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or in the request body");
-
-            // Do the actual work here - expecting a long string with names passed in
-            var names = new List<string>();
-            names.Add(name);
-
-            string ret = "C# Improved list: ";
+            var names = await ParseInputData(req, log);
+            if (names.Count == 0)
+                return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or a List<strings> in the request body");
 
             var list = ImprovedNameParser.RunNames(names);
+            string ret = "C# Improved list: ";
             foreach (var item in list)
             {
                 ret = ret + $"{item.Name}, ";
@@ -85,26 +78,9 @@ namespace FuncNameApp
         [FunctionName("FSimpel")]
         public static async Task<HttpResponseMessage> FRun([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
-            log.Info("C# HTTP trigger function processed a request.");
-
-            // parse query parameter
-            string name = req.GetQueryNameValuePairs()
-                .FirstOrDefault(q => string.Compare(q.Key, "name", true) == 0)
-                .Value;
-
-            if (name == null)
-            {
-                // Get request body
-                dynamic data = await req.Content.ReadAsAsync<object>();
-                name = data?.name;
-            }
-
-            if (name == null)
-                return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or in the request body");
-
-            // Do the actual work here - expecting a long string with names passed in
-            var names = new List<string>();
-            names.Add(name);
+            var names = await ParseInputData(req, log);
+            if (names.Count == 0)
+                return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or a List<strings> in the request body");
 
             var list = NameParsing.getMostPopularNames(names);
             string ret = "F# Simple list: ";
@@ -119,30 +95,12 @@ namespace FuncNameApp
         [FunctionName("FImproved")]
         public static async Task<HttpResponseMessage> RunFImproved([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
-            log.Info("C# HTTP trigger function processed a request.");
-
-            // parse query parameter
-            string name = req.GetQueryNameValuePairs()
-                .FirstOrDefault(q => string.Compare(q.Key, "name", true) == 0)
-                .Value;
-
-            if (name == null)
-            {
-                // Get request body
-                dynamic data = await req.Content.ReadAsAsync<object>();
-                name = data?.name;
-            }
-
-            if (name == null)
-                return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or in the request body");
-
-            // Do the actual work here - expecting a long string with names passed in
-            var names = new List<string>();
-            names.Add(name);
-
-            string ret = "F# Improved list: ";
+            var names = await ParseInputData(req, log);
+            if (names.Count == 0)
+                return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or a List<strings> in the request body");
 
             var list = NameParsing.getMostPopularNamesRefactored(names);
+            string ret = "F# Improved list: ";
             foreach (var item in list)
             {
                 ret = ret + $"{item}, ";
