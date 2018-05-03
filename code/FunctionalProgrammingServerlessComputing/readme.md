@@ -18,3 +18,5 @@ Sette dette ut som en skytjeneste i feks Azure Function / Amazon Lambda / noe an
 Deretter håndtere en spesifikasjon endring, som krever en refactoring: 
 Det viser seg at dataene kommer fra en crappy database og derfor må koden være uavhengig av ‘case’, videre skal dobbeltnavn (med bindestrek) tolkes som to navn. 
 Altså: “PER-kristian” skal tolkes likt “per kristian”
+
+The code is now in place for the meeting.
