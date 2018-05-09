@@ -14,6 +14,7 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
+            var webUrl = args.Length == 0 ? "localhost:7071" : "fanameparser.azurewebsites.net";
             var s = GetTestNames();
             // Simpel Improved FSimpel FImproved
             var functions = new List<string>
@@ -23,15 +24,15 @@ namespace ConsoleApp
                 "Improved",
                 "FImproved"
             };
-
+            Console.WriteLine("\nReaching out for the functions:");
             foreach (var func in functions)
             {
-                var task = RunFuncs(s, "fanameparser.azurewebsites.net", func);
-                //var task = RunFuncs(s, "localhost:7071", func);
+                var task = RunFuncs(s, webUrl, func);                
                 var result = task.Result;
                 Console.WriteLine(result);
             }
 
+            Console.WriteLine("\nRunning towards libraries locally:");
             var list = NameParser.RunNames(s);
             string ret = "C# Simple list: ";
             foreach (var item in list)
@@ -66,7 +67,7 @@ namespace ConsoleApp
                 ret = ret + $"{item}, ";
             }
             ret = ret.Substring(0, ret.Length - 2);
-            Console.WriteLine($"{ret}");
+            Console.WriteLine($"{ret}\n");
 
         }
 
