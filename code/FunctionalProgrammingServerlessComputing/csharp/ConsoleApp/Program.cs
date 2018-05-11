@@ -77,15 +77,12 @@ namespace ConsoleApp
             {
                 var client = new HttpClient();
                 client.Timeout = TimeSpan.FromSeconds(20);
-                //http://fanameparser.azurewebsites.net/api/improved?name=per%20ove%20Per%20ove%20espen%20per-ove%20B%C3%A5rd%20Espen%20b%C3%A5rd%20B%C3%A5rd
-                //var response = await client.GetAsync($"http://{url}/api/{function}?name=per%20ove%20Per%20ove%20espen%20per-ove%20B%C3%A5rd%20Espen%20b%C3%A5rd%20B%C3%A5rd");
-
+                
                 var myContent = JsonConvert.SerializeObject(list);
                 var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
                 var byteContent = new ByteArrayContent(buffer);
                 byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                //var result = client.PostAsync("", byteContent).Result;
-
+                
                 var response = await client.PostAsync($"http://{url}/api/{function}", byteContent);
                 return await response.Content.ReadAsStringAsync();
             }
